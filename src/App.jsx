@@ -1,50 +1,71 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowUpRight, Github, Mail, Menu, MoveRight, Sparkles, SquareTerminal } from 'lucide-react';
-import { ProjectCard } from './components/ProjectCard';
+import { ArrowUpRight, Bookmark, Github, Mail, Menu, MoveRight, Sparkles } from 'lucide-react';
 import { SectionHeading } from './components/SectionHeading';
 
 const projects = [
   {
-    id: 'strategy-dashboard',
-    title: 'Strategy Dashboard',
+    id: 'aurora-ops',
+    title: 'Aurora Ops Dashboard',
     category: 'Product',
-    summary: 'A dense operational dashboard for internal planning, review, and launch coordination.',
-    impact: 'Reduced weekly status meeting time by 40%.',
-    accent: 'Warm white / slate / cobalt',
+    summary: 'A dense ops interface with high-contrast cards, fast scan paths, and strong hierarchy.',
+    impact: 'Reduced internal review time by 40%.',
+    accent: 'Warm graphite / electric blue',
+    featured: true,
   },
   {
-    id: 'brand-refresh',
-    title: 'Brand Refresh System',
+    id: 'studio-refresh',
+    title: 'Studio Refresh System',
     category: 'Brand',
-    summary: 'A modular identity system for a small studio that needed consistent output across channels.',
-    impact: 'Cut asset production time from days to hours.',
-    accent: 'Stone / ink / copper',
+    summary: 'A modular identity system built to handle social, web, and pitch material without drift.',
+    impact: 'Cut asset production from days to hours.',
+    accent: 'Ink / pearl / copper',
+    featured: false,
   },
   {
-    id: 'developer-portfolio',
-    title: 'Developer Portfolio',
+    id: 'portfolio-shell',
+    title: 'Portfolio Shell',
     category: 'Web',
-    summary: 'A focused portfolio with a strong first viewport signal and clear entry points.',
-    impact: 'Improved contact conversion by making the next action obvious.',
-    accent: 'Charcoal / moss / paper',
+    summary: 'A portfolio shell designed like a curated gallery feed with a strong first impression.',
+    impact: 'Improved contact conversion with clearer navigation.',
+    accent: 'Slate / moss / frost',
+    featured: false,
   },
   {
-    id: 'launch-page',
-    title: 'Launch Page',
+    id: 'launch-gallery',
+    title: 'Launch Gallery Page',
     category: 'Web',
-    summary: 'A concise product page with fast scanning, social proof, and direct conversion paths.',
-    impact: 'Raised demo requests without adding visual noise.',
-    accent: 'Graphite / ivory / cyan',
+    summary: 'A product launch page with editorial spacing, bold cards, and focused calls to action.',
+    impact: 'Increased demo requests without adding noise.',
+    accent: 'Charcoal / cyan / ivory',
+    featured: false,
+  },
+  {
+    id: 'motion-study',
+    title: 'Motion Study',
+    category: 'Motion',
+    summary: 'A motion-focused concept with layered surfaces and smooth reveal pacing.',
+    impact: 'Gave the page a more premium, gallery-like rhythm.',
+    accent: 'Graphite / violet / mist',
+    featured: false,
+  },
+  {
+    id: 'identity-kit',
+    title: 'Identity Kit',
+    category: 'Brand',
+    summary: 'A small identity kit designed to feel crisp in a dark UI and flexible across formats.',
+    impact: 'Kept the brand consistent across touchpoints.',
+    accent: 'Charcoal / sand / blue',
+    featured: false,
   },
 ];
 
-const capabilities = [
-  'Product thinking',
-  'Frontend implementation',
-  'Design systems',
-  'Content structure',
-  'Motion and interaction',
-  'Responsive layouts',
+const filters = ['All', 'Product', 'Brand', 'Web', 'Motion'];
+
+const heroStats = [
+  { value: '12+', label: 'featured projects' },
+  { value: '8', label: 'years designing and coding' },
+  { value: '3', label: 'core focus areas' },
+  { value: '1', label: 'clear point of contact' },
 ];
 
 const experience = [
@@ -52,13 +73,13 @@ const experience = [
     role: 'Frontend Developer',
     place: 'Independent',
     period: '2023 - Present',
-    detail: 'Builds polished React interfaces with an emphasis on clarity, speed, and maintainability.',
+    detail: 'Builds polished React interfaces with a strong editorial structure and practical maintainability.',
   },
   {
     role: 'Product Designer',
     place: 'Studio work',
     period: '2020 - 2023',
-    detail: 'Shaped websites and dashboards for early-stage teams that needed crisp information hierarchy.',
+    detail: 'Shaped websites and dashboards for teams that needed clarity, rhythm, and hierarchy.',
   },
   {
     role: 'Visual Systems',
@@ -67,8 +88,6 @@ const experience = [
     detail: 'Defined component libraries and brand systems for small teams with limited design support.',
   },
 ];
-
-const filters = ['All', 'Product', 'Brand', 'Web'];
 
 export default function App() {
   const [activeFilter, setActiveFilter] = useState('All');
@@ -85,6 +104,26 @@ export default function App() {
     return projects.filter((project) => project.category === activeFilter);
   }, [activeFilter]);
 
+  const handleTiltMove = (event) => {
+    const element = event.currentTarget;
+    const rect = element.getBoundingClientRect();
+    const x = (event.clientX - rect.left) / rect.width - 0.5;
+    const y = (event.clientY - rect.top) / rect.height - 0.5;
+
+    element.style.setProperty('--tilt-x', `${(x * 10).toFixed(2)}deg`);
+    element.style.setProperty('--tilt-y', `${(-y * 10).toFixed(2)}deg`);
+    element.style.setProperty('--shine-x', `${((x + 0.5) * 100).toFixed(2)}%`);
+    element.style.setProperty('--shine-y', `${((y + 0.5) * 100).toFixed(2)}%`);
+  };
+
+  const resetTilt = (event) => {
+    const element = event.currentTarget;
+    element.style.setProperty('--tilt-x', '0deg');
+    element.style.setProperty('--tilt-y', '0deg');
+    element.style.setProperty('--shine-x', '50%');
+    element.style.setProperty('--shine-y', '50%');
+  };
+
   useEffect(() => {
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const revealTargets = document.querySelectorAll('[data-reveal]');
@@ -94,9 +133,7 @@ export default function App() {
     });
 
     if (reducedMotion) {
-      revealTargets.forEach((element) => {
-        element.classList.add('is-visible');
-      });
+      revealTargets.forEach((element) => element.classList.add('is-visible'));
       return undefined;
     }
 
@@ -182,8 +219,48 @@ export default function App() {
     };
   }, []);
 
+  useEffect(() => {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reducedMotion) {
+      document.documentElement.style.setProperty('--scroll-progress', '0');
+      document.documentElement.style.setProperty('--pointer-x', '50vw');
+      document.documentElement.style.setProperty('--pointer-y', '30vh');
+      return undefined;
+    }
+
+    const updateScroll = () => {
+      const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+      const progress = Math.min(1, Math.max(0, window.scrollY / maxScroll));
+      document.documentElement.style.setProperty('--scroll-progress', progress.toFixed(4));
+    };
+
+    const updatePointer = (event) => {
+      document.documentElement.style.setProperty('--pointer-x', `${event.clientX}px`);
+      document.documentElement.style.setProperty('--pointer-y', `${event.clientY}px`);
+    };
+
+    const resetPointer = () => {
+      document.documentElement.style.setProperty('--pointer-x', '50vw');
+      document.documentElement.style.setProperty('--pointer-y', '30vh');
+    };
+
+    updateScroll();
+    window.addEventListener('scroll', updateScroll, { passive: true });
+    window.addEventListener('pointermove', updatePointer, { passive: true });
+    window.addEventListener('pointerleave', resetPointer);
+    window.addEventListener('blur', resetPointer);
+
+    return () => {
+      window.removeEventListener('scroll', updateScroll);
+      window.removeEventListener('pointermove', updatePointer);
+      window.removeEventListener('pointerleave', resetPointer);
+      window.removeEventListener('blur', resetPointer);
+    };
+  }, []);
+
   return (
     <div className="app-shell">
+      <div className="mouse-spotlight" aria-hidden="true" />
       <div
         className={`cursor-bubble ${bubble.visible ? 'visible' : ''}`}
         aria-hidden="true"
@@ -201,7 +278,7 @@ export default function App() {
           <span className="brand-mark">P</span>
           <span>
             <strong>Portfolion</strong>
-            <small>Portfolio for thoughtful builders</small>
+            <small>Gallery-first portfolio</small>
           </span>
         </a>
 
@@ -215,29 +292,29 @@ export default function App() {
         </button>
 
         <nav className={`nav-links ${menuOpen ? 'open' : ''}`} aria-label="Primary">
-          <a href="#work">Work</a>
-          <a href="#capabilities">Capabilities</a>
+          <a href="#work">Gallery</a>
+          <a href="#about">About</a>
           <a href="#experience">Experience</a>
           <a href="#contact">Contact</a>
         </nav>
       </header>
 
       <main>
-        <section className="hero" id="home" data-reveal>
+        <section className="hero hero-gallery" id="home" data-reveal>
           <div className="hero-copy" data-reveal>
             <span className="eyebrow">
               <Sparkles size={14} />
-              Available for select freelance work
+              Inspired by the ArtStation profile feel
             </span>
-            <h1>Product design and frontend work that stays legible under pressure.</h1>
+            <h1>Dark, dense, gallery-first portfolio presentation.</h1>
             <p className="hero-text">
-              I design and build clear, fast portfolio and product experiences for teams that care about structure,
-              polish, and maintainability.
+              I reshaped the site so it feels more like a curated showcase: compact navigation, strong thumbnails,
+              and a premium dark surface with layered cards.
             </p>
 
             <div className="hero-actions">
               <a className="primary-button" href="#work">
-                View selected work
+                View gallery
                 <MoveRight size={16} />
               </a>
               <a className="secondary-button" href="mailto:hello@yourname.com">
@@ -247,23 +324,21 @@ export default function App() {
             </div>
 
             <div className="hero-stats" aria-label="Highlights">
-              <div>
-                <strong>12+</strong>
-                <span>projects launched</span>
-              </div>
-              <div>
-                <strong>8</strong>
-                <span>years designing and coding</span>
-              </div>
-              <div>
-                <strong>1</strong>
-                <span>clear point of contact</span>
-              </div>
+              {heroStats.map((item) => (
+                <div key={item.label}>
+                  <strong>{item.value}</strong>
+                  <span>{item.label}</span>
+                </div>
+              ))}
             </div>
           </div>
 
           <aside className="hero-panel" aria-label="Profile summary" data-reveal>
-            <div className="profile-card">
+            <div
+              className="profile-card profile-card-gallery"
+              onPointerMove={handleTiltMove}
+              onPointerLeave={resetTilt}
+            >
               <div className="profile-top">
                 <span className="avatar">YN</span>
                 <div>
@@ -282,8 +357,8 @@ export default function App() {
                   <strong>React, Vite, CSS, Node</strong>
                 </div>
                 <div>
-                  <span>Location</span>
-                  <strong>Remote / Pacific Time</strong>
+                  <span>Style</span>
+                  <strong>Editorial, dark, gallery-like</strong>
                 </div>
                 <div>
                   <span>Status</span>
@@ -303,9 +378,9 @@ export default function App() {
 
         <section className="section" id="work" data-reveal>
           <SectionHeading
-            overline="Selected work"
-            title="A short list of projects with real constraints."
-            description="This portfolio is built around scanning, comparison, and an obvious next step."
+            overline="Gallery"
+            title="Selected work presented like a feed of featured pieces."
+            description="Use the grid to make each project feel like a thumbnail-led ArtStation entry instead of a generic card."
           />
 
           <div className="filter-row" role="tablist" aria-label="Project filters">
@@ -323,26 +398,66 @@ export default function App() {
             ))}
           </div>
 
-          <div className="project-grid">
-            {visibleProjects.map((project) => (
-              <ProjectCard key={project.id} project={project} />
+          <div className="gallery-grid">
+            {visibleProjects.map((project, index) => (
+              <article
+                key={project.id}
+                className={`project-card project-card-gallery ${index === 0 ? 'featured' : ''}`}
+                data-reveal
+                onPointerMove={handleTiltMove}
+                onPointerLeave={resetTilt}
+                style={{
+                  '--preview-a': project.featured ? 'rgba(25, 31, 45, 0.96)' : 'rgba(18, 23, 32, 0.96)',
+                  '--preview-b': project.featured ? 'rgba(48, 83, 168, 0.94)' : 'rgba(35, 56, 79, 0.94)',
+                  '--preview-c': project.featured ? 'rgba(127, 176, 255, 0.92)' : 'rgba(106, 167, 123, 0.9)',
+                }}
+              >
+                <div className="project-preview" aria-hidden="true">
+                  <div className="project-preview-glow" />
+                  <div className="project-preview-card">
+                    <span className="project-preview-label">{project.category}</span>
+                    <strong>{project.title}</strong>
+                  </div>
+                  <span className="project-preview-badge">{project.accent}</span>
+                </div>
+
+                <div className="project-meta">
+                  <div className="project-topline">
+                    <span>{project.category}</span>
+                    <ArrowUpRight size={16} />
+                  </div>
+                  <h3>{project.title}</h3>
+                  <p>{project.summary}</p>
+                  <div className="project-footer">
+                    <span className="project-impact">{project.impact}</span>
+                    <span className="project-accent">{project.accent}</span>
+                  </div>
+                </div>
+              </article>
             ))}
           </div>
         </section>
 
-        <section className="section split-section" id="capabilities" data-reveal>
+        <section className="section split-section" id="about" data-reveal>
           <div>
             <SectionHeading
-              overline="Capabilities"
-              title="I keep the scope narrow and the output usable."
-              description="The site is structured for clarity first, with enough visual tension to feel intentional."
+              overline="About"
+              title="The structure stays compact and high-contrast."
+              description="This part is now closer to the profile-and-details rhythm you see on ArtStation."
             />
           </div>
 
-          <div className="capability-list" aria-label="Capabilities list">
-            {capabilities.map((item) => (
+          <div className="capability-list capability-list-gallery" aria-label="Capabilities list">
+            {[
+              'Curated presentation',
+              'Strong visual hierarchy',
+              'Dark UI systems',
+              'Fast scanning content',
+              'Motion polish',
+              'Responsive layout',
+            ].map((item) => (
               <div key={item} className="capability-item" data-reveal>
-                <SquareTerminal size={16} />
+                <Bookmark size={16} />
                 <span>{item}</span>
               </div>
             ))}
@@ -373,7 +488,11 @@ export default function App() {
         </section>
 
         <section className="section contact-section" id="contact" data-reveal>
-          <div className="contact-card">
+          <div
+            className="contact-card contact-card-gallery"
+            onPointerMove={handleTiltMove}
+            onPointerLeave={resetTilt}
+          >
             <SectionHeading
               overline="Contact"
               title="Send a short brief and I'll respond with a concrete next step."
