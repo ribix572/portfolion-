@@ -89,6 +89,13 @@ const experience = [
   },
 ];
 
+const groupMembers = [
+  { name: 'Lead', role: 'Direction and planning' },
+  { name: 'Design', role: 'Visual systems and layout' },
+  { name: 'Code', role: 'Frontend implementation' },
+  { name: 'Motion', role: 'Interaction and polish' },
+];
+
 export default function App() {
   const [activeFilter, setActiveFilter] = useState('All');
   const [menuOpen, setMenuOpen] = useState(false);
@@ -294,6 +301,7 @@ export default function App() {
         <nav className={`nav-links ${menuOpen ? 'open' : ''}`} aria-label="Primary">
           <a href="#work">Gallery</a>
           <a href="#about">About</a>
+          <a href="#group">My group</a>
           <a href="#experience">Experience</a>
           <a href="#contact">Contact</a>
         </nav>
@@ -460,6 +468,23 @@ export default function App() {
                 <Bookmark size={16} />
                 <span>{item}</span>
               </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="section" id="group" data-reveal>
+          <SectionHeading
+            overline="My group"
+            title="A small team structure for focused work."
+            description="Use this section to show how the project is organized and who handles each part of the workflow."
+          />
+
+          <div className="group-grid">
+            {groupMembers.map((member) => (
+              <article key={member.name} className="group-card" data-reveal>
+                <span className="group-role">{member.name}</span>
+                <h3>{member.role}</h3>
+              </article>
             ))}
           </div>
         </section>

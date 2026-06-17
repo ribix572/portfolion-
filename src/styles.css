@@ -674,6 +674,38 @@ button {
   padding-top: 12px;
 }
 
+.group-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.group-card {
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02)), var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.group-role {
+  display: inline-flex;
+  margin-bottom: 12px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.group-card h3 {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
 .capability-item {
   display: flex;
   align-items: center;
@@ -737,7 +769,8 @@ button {
   .hero,
   .split-section,
   .project-grid,
-  .gallery-grid {
+  .gallery-grid,
+  .group-grid {
     grid-template-columns: 1fr;
   }
 
